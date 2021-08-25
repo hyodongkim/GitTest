@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.study.springboot.dao.IMemberDao">
+
+	<select id="login" resultType="_int">
+		SELECT COUNT(*) FROM hp_Member WHERE hp_ID = #{param1} AND hp_Password = #{param2}
+	</select>
+	
+	<insert id="join" parameterType="com.study.springboot.dto.MemberDto">
+		INSERT INTO hp_Member (
+			hp_Index, hp_ID, hp_Password, hp_Name, hp_Birthday_Year, hp_Birthday_Month,
+			hp_Sex, hp_Email, hp_Phone, hp_Ticket, hp_Auth ) 
+			values( numb.nextval, #{hp_ID}, #{hp_Password}, #{hp_Name}, #{hp_Birthday_Year}, #{hp_Birthday_Month}, 
+					#{hp_Sex}, #{hp_Email}, #{hp_Phone}, 0, 0 )
+	</insert>
+	
+	<select id="idCheck" resultType="_int">
+		SELECT * FROM hp_Member WHERE hp_ID = #{param1}
+	</select>
+	
+	<select id="findID" resultType="com.study.springboot.dto.MemberDto">
+		SELECT * FROM hp_Member WHERE hp_Name = #{param1} AND hp_Email = #{param2}
+ 	</select>
+ 	
+ 	<select id="findPassword" resultType="com.study.springboot.dto.MemberDao">
+ 		SELECT * FROM hp_Member WHERE hp_Name = #{param1} AND hp_ID = #{param2} AND hp_Email = #{param3}
+ 	</select>	
+ 	
+</mapper>
