@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.study.springboot.dao.IAdminDao">
+	
+	<!-- 회원목록 가져오기 _ 오름차순 -->
+	<select id="memberlist" resultType="com.study.springboot.dto.MemberDto">
+		SELECT * FROM hp_Member ORDER BY hp_Index
+	</select>
+	
+	<!-- 도서목록 가져오기 -->
+	<select id="booklist" resultType="_int">
+		SELECT * FROM hp_Book ORDER BY book_Index
+	</select>
+	
+	<!-- 도서목록 추가하기 -->
+	<insert id="join" parameterType="com.study.springboot.dto.MemberDto">
+		INSERT INTO hp_Member (
+			hp_Index, hp_ID, hp_Password, hp_Name, hp_Birthday_Year, hp_Birthday_Month,
+			hp_Sex, hp_Email, hp_Phone, hp_Ticket, hp_Auth ) 
+			values( numb.nextval, #{hp_ID}, #{hp_Password}, #{hp_Name}, #{hp_Birthday_Year}, #{hp_Birthday_Month}, 
+					#{hp_Sex}, #{hp_Email}, #{hp_Phone}, 0, 0 )
+	</insert>
+ 	
+ 	<select id="findPassword" resultType="com.study.springboot.dto.MemberDao">
+ 		SELECT * FROM hp_Member WHERE hp_Name = #{param1} AND hp_ID = #{param2} AND hp_Email = #{param3}
+ 	</select>	
+ 	
+</mapper>
