@@ -1,0 +1,172 @@
+portfolio / team_e
+
+▷ 회원 테이블 ; 회원 번호, 아이디, 비밀번호, 이름, 생일, 성별, 이메일, 핸드폰, 티켓, 권한(관리자)
+Create table hp_Member(
+    hp_Index                number(6) primary key,
+    hp_ID                   varchar2(20) not null,
+    hp_Password             varchar2(30) not null,
+    hp_Name                 varchar2(20) not null,
+    hp_Birthday_Year        number(15) not null,
+    hp_Birthday_Month       number(15) not null,
+    hp_Sex                  number(3) not null,
+    hp_Email                varchar2(40) not null,
+    hp_Phone                varchar2(20) not null,
+    hp_Ticket               number(6) not null,
+    hp_Auth                 number(6) not null  # 1 : 일반 사용자 / 0 : 관리자
+);
+
+--------------------------------------------------------------------------------------------------------------------------------
+drop table hp_Book;
+
+▷ 도서 테이블 ; 도서 번호, 제목, 작가, 출판사, 이미지, 내용, 소개, 후기
+Create table hp_Book (
+  book_Index        number(6) primary key,
+  book_Title        varchar2(20) not null,
+  book_Writer       varchar2(20) not null,
+  book_Company      varchar2(20) not null,
+  book_Image        varchar2(100) not null,
+  book_Content      varchar2(300) not null, 
+  book_Introduce    varchar2(300) not null, 
+  book_review       varchar2(300) not null
+);
+
+----------------------------------------------------------------------------------------------------------------------------------
+drop table hp_MyBooks;
+
+▷ 즐겨찾기 ; 회원 번호, 도서 번호, 제목, 작가, 출판사, 이미지, 소개
+Create table hp_Mybooks (
+  hp_Index          number(6) primary key,
+  book_Index        number(6) not null,
+  book_Title        varchar2(20) not null,
+  book_Writer       varchar2(20) not null,
+  book_Company      varchar2(30) not null,
+  book_Image        varchar2(100) not null,
+  book_Introduce    varchar2(300) not null,
+
+  Constraint hp_Mybooks_FK_hp foreign key(hp_Index) references hp_Member(hp_Index),
+  Constraint hp_Mybooks_FK_book foreign key(book_Index) references hp_Book(book_Index)
+);
+
+drop sequence hp_Mybooks_hp_Index;
+create sequence hp_Mybooks_hp_Index increment by 1 start with 1 minvalue 1 maxvalue 1000 nocycle nocache;
+
+insert into hp_Mybooks( hp_Index, book_Index, book_Title, book_Writer, book_Company, book_Image, book_Introduce )
+  values( hp_Mybooks_hp_Index.nextval, 112233, '미스터리', '기묘로동', '묘동출판사', '난왜코딩이어려운가.png', '나의코딩을길을찾는다' );
+insert into hp_Mybooks( hp_Index, book_Index, book_Title, book_Writer, book_Company, book_Image, book_Introduce )
+  values( hp_Mybooks_hp_Index.nextval, 123456, '미스터유', 'teamE', 'kim동출판사', '난왜코딩이어려운가.png', '나의코딩을길을찾는다' );
+
+select * from hp_Mybooks;
+
+! 즐겨찾기에 도서 이미지와 도서명만 기재 -> 컬럼 : hp_Index / book_Index / book_Title / book_Image ...? 
+  -> 도서 이미지 클릭 시 도서 상세페이지로 이동 ; redirect로 도서 상세페이지 이동 -> 컬럼 필요??
+----------------------------------------------------------------------------------------------------------------------------------
+drop table hp_Board;
+
+▷ 게시판 ; 게시판 번호, 회원 이름, 아이디, 제목, 요청사항, 답변, 조회수
+Create table hp_Board (
+  board_Index       number(6),
+  hp_Name           varchar2(20) not null, ! 이름 대신 번호?
+  hp_ID             varchar2(20) primary key, ! 아니면 ID?
+  board_Title       varchar2(20) not null,
+  board_Question    varchar2(300) not null,
+  board_Answer      varchar2(300) not null,
+  board_Count       number(6),
+   ! board_Date      number(10),
+   
+  ! Constraint hp_Board_FK foreign key(hp_Name) references hp_Member(hp_Name)
+);
+
+create sequence hp_Board_Index increment by 1 start with 1 minvalue 1 maxvalue 1000 nocycle nocache;
+
+insert into hp_Board( board_Index, hp_Name, hp_ID, board_Title, board_Question, board_Answer, board_count, board_Date )
+  values( hp_Board_Index.nextval,'dong-dong', 'kimkkim', '로맨스', '질문있습니다.','뭡니까', 1, sysdate );
+
+select * from hp_Board;
+
+! 게시판과 공지사항을 같이 쓰려고 했는데 그러면 Index가 섞여서..... 헷갈리면 안되니까....................
+    hp_Board / hp_Notice 나누는 게 나을 듯............... 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+drop table hp_Notice;
+
+▷ 공지사항 ; 공지사항 번호, 제목, 내용, 날짜, 조회수 + ∂
+Create table hp_Notice (
+  notice_Index      number(6),
+  notice_Title      varchar2(20) not null,
+  notice_Content    varchar2(300) not null,
+  notice_Date       number(10),
+  notice_Count      number(6)
+ 
+);
+
+create sequence hp_Notice_Index increment by 1 start with 1 minvalue 1 maxvalue 1000 nocycle nocache;
+
+insert into hp_Notice( notice_Index, notice_Title, notice_Content, notice_Date, notice_Count )
+  values( hp_Notice_Index.nextval,'공지사항', '사이트 점검 있습니다.', sysdate, 1 );
+
+select * from hp_Notice;
+
+! 작성자가 필요할까?
+----------------------------------------------------------------------------------------------------------------------------------
+drop table hp_QnA;
+
+▷ 1:1 게시판 ; 게시판 번호, 회원 번호, 이름, 아이디, 제목, 요청사항, 답변, 비밀번호
+Create table hp_QnA (
+  qna_Index         number(6) primary key,
+  hp_Index          number(6) not null, -> 회원 번호
+  hp_Name           varchar2(20),
+  hp_ID             varchar2(20) not null,
+  qna_Title         varchar2(20) not null,
+  qna_Question      varchar2(300) not null,
+  qna_Answer        varchar2(300) not null,
+  qna_Password      varchar2(30) not null,
+
+  Constraint hp_QnA_FK foreign key(hp_Index) references hp_Member(hp_Index)
+);
+
+drop sequence hp_QnA_qna_Index;
+create sequence hp_QnA_qna_Index increment by 1 start with 1 minvalue 1 maxvalue 1000 nocycle nocache;
+
+drop sequence hp_QnA_hp_Index;
+create sequence hp_QnA_hp_Index increment by 1 start with 1 minvalue 1 maxvalue 1000 nocycle nocache;
+
+insert into hp_qna( qna_Index, hp_Index, hp_Name, hp_ID, qna_Title, qna_Question, qna_Answer, qna_Password )
+  values( hp_QnA_qna_Index.nextval, hp_QnA_hp_Index.nextval, 'hyo-dong', 'kim878', '공포', '아아아아아 힘들어', '그래 나도오 힘들어어', 'hd9999' );
+insert into hp_qna( qna_Index, hp_Index, hp_Name, hp_ID, qna_Title, qna_Question, qna_Answer, qna_Password )
+  values( hp_QnA_qna_Index.nextval, hp_QnA_hp_Index.nextval, 'hyo-hyo-hyo', 'kim878', '해피앤딩', '아아아아아 힘들어', '그래 나도오 힘들어어', 'hd9999' );
+
+select * from hp_qna;
+
+! 회원 번호가 왜 삽입문에서 증가? 
+! 시퀀스 2개? 
+----------------------------------------------------------------------------------------------------------------------------------
+drop table book_Review ;
+
+▷ 도서 리뷰 ; 도서 번호, 제목, 회원 닉네임, 비밀번호, 리뷰 내용
+Create table book_Review(
+  book_Index        number(6) primary key,
+  hp_Index          number(6) not null, -> 회원번호
+  hp_ID             varchar2(20) not null,
+  book_review       varchar2(300) not null,
+  
+  Constraint book_Review_FK_Book foreign key(book_Index) references hp_Book(book_Index)
+   ! Constraint book_Review_FK_Member foreign key(hp_Index) references hp_Member(hp_Index) -> 회원번호 연동
+
+);
+
+drop sequence book_Review_book_Index;
+create sequence book_Review_book_Index increment by 1 start with 1 minvalue 1 maxvalue 1000 nocycle nocache;
+
+drop sequence book_Review_hp_Index;
+create sequence book_Review_hp_Index increment by 1 start with 1 minvalue 1 maxvalue 1000 nocycle nocache;
+
+insert into book_Review( book_Index, hp_Index, hp_ID, book_review ) 
+  values( Book_review_book_Index.nextval, Book_review_hp_Index.nextval, 'ddd', '진또배기꿀잼이다' );
+insert into book_Review( book_Index, hp_Index, hp_ID, book_review ) 
+  values( Book_review_book_Index.nextval, Book_review_hp_Index.nextval, 'ddd', '예스잼' );
+  
+select * from book_Review;
+
+alter table Book_review Drop Constraint Book_review_FK;
+
+! 회원번호가 삽입문에서 증가?
+----------------------------------------------------------------------------------------------------------------------------------

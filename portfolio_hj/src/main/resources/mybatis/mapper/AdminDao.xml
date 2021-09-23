@@ -5,28 +5,103 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
     
 <mapper namespace="com.study.springboot.dao.IAdminDao">
+	<!-- 관리자 로그인 ; 아이디 : admin / 패스워드 : password -->
+	<select id="adminLogin" resultType="_int">
+		SELECT COUNT(*) FROM hp_Member WHERE hp_ID=#{param1} AND hp_Password=#{param2} 
+	</select>
 	
-	<!-- 회원목록 가져오기 _ 오름차순 -->
+	
+	<!-- 회원목록 가져오기_오름차순 ; 회원 번호 -->
 	<select id="memberlist" resultType="com.study.springboot.dto.MemberDto">
 		SELECT * FROM hp_Member ORDER BY hp_Index
 	</select>
 	
-	<!-- 도서목록 가져오기 -->
-	<select id="booklist" resultType="_int">
+	
+	<!-- 도서 목록 가져오기_오름차순 ; 도서 번호 -->
+	<select id="booklist" resultType="com.study.springboot.dto.BookListDto">
 		SELECT * FROM hp_Book ORDER BY book_Index
 	</select>
 	
-	<!-- 도서목록 추가하기 -->
-	<insert id="join" parameterType="com.study.springboot.dto.MemberDto">
-		INSERT INTO hp_Member (
-			hp_Index, hp_ID, hp_Password, hp_Name, hp_Birthday_Year, hp_Birthday_Month,
-			hp_Sex, hp_Email, hp_Phone, hp_Ticket, hp_Auth ) 
-			values( numb.nextval, #{hp_ID}, #{hp_Password}, #{hp_Name}, #{hp_Birthday_Year}, #{hp_Birthday_Month}, 
-					#{hp_Sex}, #{hp_Email}, #{hp_Phone}, 0, 0 )
+	<!-- 도서 추가하기 ; 도서 번호, 제목, 작가, 출판사, 내용, 소개, 이미지 -->
+	<insert id="addBook" parameterType="com.study.springboot.dto.BookListDto">
+		INSERT INTO hp_Book ( 
+		  book_Index, book_Title, book_Writer, book_Company, 
+		  book_Content, book_Introduce, book_Image ) 
+			values( hp_Book_book_Index.nextval, #{book_Title}, #{book_Writer}, #{book_Company},
+					 #{book_Content}, #{book_Introduce}, #{book_Image} )
 	</insert>
+	
+	<!-- 도서 편집하기 ; 도서 번호로 편집 : 편집버튼으로 번호 얻어오기 
+						  ;	도서 제목, 작가, 출판사, 이미지, 내용, 소개 -->
+	<update id="updateBook" parameterType="com.study.springboot.dto.BookListDto">
+		UPDATE hp_Book set 
+			book_Title=#{param2}, book_Writer=#{param3}, book_Company=#{param4}, 
+			book_Image=#{param5}, book_Content=#{param6}, book_Introduce=#{param7}
+		  WHERE book_Index=#{param1}
+	</update>
  	
- 	<select id="findPassword" resultType="com.study.springboot.dto.MemberDao">
- 		SELECT * FROM hp_Member WHERE hp_Name = #{param1} AND hp_ID = #{param2} AND hp_Email = #{param3}
+ 	<!-- 도서 삭제하기 ; 도서 인덱스 : 삭제버튼으로 번호 얻어오기! -->
+ 	<delete id="deleteBook" parameterType="com.study.springboot.dto.BookListDto">
+ 		DELETE FROM hp_Book WHERE book_Index=#{param1} 
+ 	</delete>
+ 	
+ 	
+ 	<!-- 도서 리뷰 가져오기_오름차순 ; 리뷰 번호 -->
+ 	<select id="reviewlist" resultType="com.study.springboot.dto.BookReviewDto">
+		SELECT * FROM Book_review ORDER BY review_Index
+	</select>
+	
+	<!-- 도서 리뷰 삭제하기 ; 리뷰 인덱스 -->
+	<delete id="deleteReview" parameterType="com.study.springboot.dto.BookReviewDto">
+		DELETE FROM Book_Review WHERE review_Index=#{param1}
+	</delete>
+ 	
+ 	
+ 	<!-- 공지사항 리스트_내림차순 ; 공지사항 번호 -->
+ 	<select id="noticelist" resultType="com.study.springboot.dto.NoticeDto">
+ 		SELECT * FROM hp_Notice ORDER BY notice_Index desc
  	</select>	
  	
+ 	<!-- 공지사항 추가하기 ; 공지사항 번호, 제목, 내용, 날짜, 조회수 -->
+ 	<insert id="addNotice" parameterType="com.study.springboot.dto.NoticeDto">
+ 		INSERT INTO hp_Notice ( 
+ 			notice_Index, notice_Title, notice_Content, notice_Date, notice_Count ) 
+ 				values ( hp_Notice_Index.nextval, #{notice_Title}, #{notice_Content},
+ 							 #{notice_Date}, #{notice_Count} )
+ 	</insert>
+ 	
+ 	<!-- 공지사항 편집하기 ; 공지사항 번호로 변경 : 제목 누르면 번호 얻어오기
+ 							  ; 공지사항 제목, 내용 -->
+ 	<update id="updateNotice" parameterType="com.study.springboot.dto.NoticeDto">
+ 		UPDATE hp_Notice set 
+ 			notice_Title=#{param2}, notice_Content=#{param3} 
+ 		  WHERE notice_Index=#{param1}
+ 	</update>
+ 	
+ 	<!-- 공지사항 삭제하기 ; 공지사항 번호 -->
+ 	<delete id="deleteNotice" parameterType="com.study.springboot.dto.NoticeDto">
+ 		DELETE FROM hp_Notice WHERE notice_Index=#{param1}
+ 	</delete>
+ 	
+ 	
+ 	<!-- 1:1 문의 목록_내림차순 ; 1:1 문의 번호 -->
+	<select id="QnAlist" resultType="com.study.springboot.dto.QnADto">
+		SELECT * FROM hp_QnA ORDER BY qna_Index desc
+	</select> 	
+	
+	<!-- 1:1 문의 답변하기 ; 답변 번호, 문의 번호, 답변, 답변 날짜 -->
+	<insert id="reply_QnAnwer" parameterType="com.study.springboot.dto.QnA_AnswerDto">
+		INSERT INTO QnA_Answer (
+			answer_Index, qna_Index, qna_Answer, answer_Date )
+				values ( QnA_Answer_Index.nextval, #{qna_Index}, #{qna_Answer}, #{answer_Date} )
+	</insert>
+	
+	<!-- 1:1 문의 답변 편집하기 ; 답변 번호로 변경 
+								  ; 답변 내용 -->
+	<update id="updateReplyAnswer" parameterType="com.study.springboot.dto.QnA_AnswerDto">
+		UPDATE QnA_Answer set 
+			qna_Answer=#{param2}
+		  WHERE answer_Index=#{param1}
+	</update>
+	
 </mapper>

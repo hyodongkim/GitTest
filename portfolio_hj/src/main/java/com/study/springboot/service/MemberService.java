@@ -13,7 +13,7 @@ public class MemberService {
 	@Autowired
 	private IMemberDao memberDao;
 	
-	// 로그인
+	// 회원로그인
 	public int login( String hp_ID, String hp_Password ) {
 		int result = 0;
 		
@@ -50,7 +50,7 @@ public class MemberService {
 		return "";
 	}
 	
-	// ID 중복 확인
+	// ID 중복체크
 	public int idCheckAjax( String hp_ID ) {
 		int result = 0;
 		

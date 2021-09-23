@@ -10,7 +10,7 @@ import com.study.springboot.dto.MemberDto;
 public interface IMemberDao {
 	public int join( MemberDto member_dto );
 	public int login( String hp_ID, String hp_Password );
+	public int idCheck( String hp_ID );
 	public List<MemberDto> findID( String hp_Name, String hp_Email );
 	public List<MemberDto> findPassword( String hp_Name, String hp_ID, String hp_Email );
-	public int idCheck( String hp_ID );
 }
