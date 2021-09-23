@@ -74,16 +74,16 @@
     <div id="wrap">
         <nav>
             <ul id="nav1">
-                <li id="logo"><a href="admin_member.html"><img src="./img/logo.png" alt="로고"></a></li>
-                <li><a href="admin_member.html">회원정보</a></li>
-                <li><a href="admin_book.html">도서정보</a></li>
-                <li><a href="admin_review.html">리뷰관리</a></li>
-                <li><a href="admin_qna.html">1:1문의</a></li>
-                <li><a href="admin_notice.html">공지사항</a></li>
+                <li id="logo"><a href="admin_member.jsp"><img src="./img/logo.png" alt="로고"></a></li>
+                <li><a href="admin_member.jsp">회원정보</a></li>
+                <li><a href="admin_book.jsp">도서정보</a></li>
+                <li><a href="admin_review.jsp">리뷰관리</a></li>
+                <li><a href="admin_qna.jsp">1:1문의</a></li>
+                <li><a href="admin_notice.jsp">공지사항</a></li>
             </ul>
             <ul id="nav2">
                 <li><a href="">회원정보 변경</a></li>
-                <li><a href="admin.html">로그아웃</a></li>
+                <li><a href="admin.jsp">로그아웃</a></li>
             </ul>
         </nav>
         <table class="table table-hover">

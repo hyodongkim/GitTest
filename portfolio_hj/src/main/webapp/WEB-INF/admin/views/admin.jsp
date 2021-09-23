@@ -72,7 +72,7 @@
 <body>
     <div id="wrap">
         <header>
-            <a href="admin.html"><img src="./img/logo.png" alt="로고"></a>
+            <a href="admin.jsp"><img src="./img/logo.png" alt="로고"></a>
         </header>
         <h1>관리자페이지 로그인</h1>
         <div id="login">
